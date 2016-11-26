@@ -6,23 +6,22 @@ import {
   GraphQLInt
 } from 'graphql';
 
-var AuthorType = new GraphQLObjectType({
+let DATA = { name: 'yasser'}
+
+const AuthorType = new GraphQLObjectType({
   name: 'Author',
   fields: {
     name: {
       type: GraphQLString,
-      args: {
-        id: { type: GraphQLInt },
-      },
       resolve: (obj, vars, context) => {
         console.log('name field> resolve> [obj, context, vars]=', [obj, context, vars]);
-        return 'yasser'
+        return DATA.name
       }
     }
   }
 })
 
-var queryType = new GraphQLObjectType({
+const queryType = new GraphQLObjectType({
   name: 'RootQuerytype',
   fields: {
     author: {
@@ -35,17 +34,34 @@ var queryType = new GraphQLObjectType({
   }
 })
 
-var schema = new GraphQLSchema({
+const mutationType = new GraphQLObjectType({
+  name : 'RootMutationType',
+  fields: {
+    updateAuthor: {
+      type: AuthorType,
+      args: {
+        name: {type: GraphQLString},
+      },
+      resolve: () => {
+        DATA.name = 'Moussa'
+        return true
+      },
+    },
+  },
+})
+
+const schema = new GraphQLSchema({
   query: queryType,
+  mutation: mutationType,
 });
 
-var query = 'query getAuthor($id: Int){ author { name(id: $id) } }';
+const mutation = 'mutation {updateAuthor(name:"Test") {name}}'
 
-const rootValue = { x: 1 }
-const contextValue = { y: 2 }
-const variables = { id: 1 }
+const  rootValue = { x: 1 }
+const  contextValue = { y: 2 }
+const  variables = { id: 1 }
 
-graphql(schema, query, rootValue, contextValue, variables)
+graphql(schema, mutation, rootValue, contextValue, variables)
   .then(result => {
     console.log(JSON.stringify(result, null, 2));
   });
