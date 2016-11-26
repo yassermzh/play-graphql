@@ -24,6 +24,9 @@ var queryType = new GraphQLObjectType({
   fields: {
     author: {
       type: AuthorType,
+      args: {
+        id: { type: GraphQLInt },
+      },
       resolve: (root, vars, context) => {
         console.log('root query> [root, context, vars]=', [root, context, vars]);
         return {}
@@ -36,12 +39,13 @@ var schema = new GraphQLSchema({
   query: queryType,
 });
 
-var query = 'query { author { name } }';
+var query = 'query getAuthor($id: Int){ author(id: $id) { name } }';
 
 const rootValue = { x: 1 }
 const contextValue = { y: 2 }
+const variables = { id: 1 }
 
-graphql(schema, query, rootValue, contextValue)
+graphql(schema, query, rootValue, contextValue, variables)
   .then(result => {
     console.log(JSON.stringify(result, null, 2));
   });
