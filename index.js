@@ -11,6 +11,7 @@ var AuthorType = new GraphQLObjectType({
   fields: {
     name: {
       type: GraphQLString,
+      resolve: () => 'yasser'
     }
   }
 })
@@ -21,7 +22,7 @@ var queryType = new GraphQLObjectType({
     author: {
       type: AuthorType,
       resolve() {
-        return { name: 'yasser' };
+        return ({})
       }
     }
   }
