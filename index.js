@@ -11,7 +11,10 @@ var AuthorType = new GraphQLObjectType({
   fields: {
     name: {
       type: GraphQLString,
-      resolve: () => 'yasser'
+      resolve: (obj, vars, context) => {
+        console.log('name field> resolve> [obj, context, vars]=', [obj, context, vars]);
+        return 'yasser'
+      }
     }
   }
 })
@@ -21,8 +24,9 @@ var queryType = new GraphQLObjectType({
   fields: {
     author: {
       type: AuthorType,
-      resolve() {
-        return ({})
+      resolve: (root, vars, context) => {
+        console.log('root query> [root, context, vars]=', [root, context, vars]);
+        return {}
       }
     }
   }
@@ -34,7 +38,10 @@ var schema = new GraphQLSchema({
 
 var query = 'query { author { name } }';
 
-graphql(schema, query)
+const rootValue = { x: 1 }
+const contextValue = { y: 2 }
+
+graphql(schema, query, rootValue, contextValue)
   .then(result => {
     console.log(JSON.stringify(result, null, 2));
   });
